@@ -1,9 +1,13 @@
+"""SRPM metadata caching service"""
+import sarge
+
 from flask import Flask
 application = Flask(__name__)
 
 @application.route("/")
-def hello():
-    return "Hello World!"
+def check_builder():
+    # No real code yet, just checking repdevtools is available
+    return sarge.get_stdout(["rpm2cpi", "--help"])
 
 if __name__ == "__main__":
     application.run()
