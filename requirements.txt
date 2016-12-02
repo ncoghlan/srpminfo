@@ -4,3 +4,4 @@ flask-restful
 sarge
 attrs
 requests
+dogpile.cache
