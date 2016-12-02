@@ -1,3 +1,6 @@
 gunicorn
 Flask
+flask-restful
 sarge
+attrs
+requests
