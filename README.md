@@ -73,3 +73,9 @@ That builder must then be specified when creating the app:
 oc new-app python35-rpmdevtools-s2i~https://github.com/ncoghlan/srpminfo.git
 oc expose svc srpminfo
 ```
+
+The project should also include a Redis instance to back the cache:
+
+```
+oc new-app centos/redis
+```

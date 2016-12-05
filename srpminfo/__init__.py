@@ -19,23 +19,20 @@ log = logging.getLogger(__name__)
 ##############################################
 cache_region = None
 
-def configure_cache(cachename):
-    # Just using per-container data storage for now
-    # This will need to switch to a Redis backend to allow front-end autoscaling
+def configure_cache(redis_host, redis_port=6379, redis_db=0):
+    """Configure the SRPM lookup caching"""
     global cache_region, lookup_source, lookup_srpm
     if cache_region is not None:
         raise RuntimeError("Cache already initialised")
-    # Ensure the cache file exists
-    cachepath = pathlib.Path(cachename).expanduser()
-    cachepath.parent.mkdir(parents=True, exist_ok=True)
-    with dbm.open(str(cachepath), "c"):
-        pass
-    # Configure a cache region that uses it
+    # Configure a Redis-backed cache region
     cache_region = make_region().configure(
-        'dogpile.cache.dbm',
+        'dogpile.cache.redis',
         arguments = {
-                "filename": str(cachepath)
-        }
+            'host': redis_host,
+            'port': redis_port,
+            'db': redis_db,
+            'distributed_lock': True
+            }
     )
 
     # Replacing the lookup methods with autocaching equivalents
