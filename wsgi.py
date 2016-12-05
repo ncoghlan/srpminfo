@@ -85,4 +85,5 @@ def _setup_logging():
 
 if __name__ == "__main__":
     _setup_logging()
+    srpminfo.configure_cache("~/srpminfo/cachefile.dbm")
     application.run()

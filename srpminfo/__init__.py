@@ -1,4 +1,5 @@
 """Helper module to cache SRPM metadata"""
+import dbm
 import logging
 import pathlib
 import tempfile
@@ -16,10 +17,30 @@ log = logging.getLogger(__name__)
 ##############################################
 # Response caching
 ##############################################
-# Just using in memory data storage for now
-cache_region = make_region().configure(
-    'dogpile.cache.memory'
-)
+cache_region = None
+
+def configure_cache(cachename):
+    # Just using per-container data storage for now
+    # This will need to switch to a Redis backend to allow front-end autoscaling
+    global cache_region, lookup_source, lookup_srpm
+    if cache_region is not None:
+        raise RuntimeError("Cache already initialised")
+    # Ensure the cache file exists
+    cachepath = pathlib.Path(cachename).expanduser()
+    cachepath.parent.mkdir(parents=True, exist_ok=True)
+    with dbm.open(str(cachepath), "c"):
+        pass
+    # Configure a cache region that uses it
+    cache_region = make_region().configure(
+        'dogpile.cache.dbm',
+        arguments = {
+                "filename": str(cachepath)
+        }
+    )
+
+    # Replacing the lookup methods with autocaching equivalents
+    lookup_source = cache_region.cache_on_arguments()(lookup_source)
+    lookup_srpm = cache_region.cache_on_arguments()(lookup_srpm)
 
 ##############################################
 # Query APIs
@@ -37,7 +58,6 @@ class CachedSRPM:
     release = attrib()
     sources = attrib()
 
-@cache_region.cache_on_arguments()
 def lookup_source(remote_url):
     """Report hash details for a given URL (retrieving and hashing as needed)"""
     with _tempdir() as tmpdir:
@@ -45,7 +65,6 @@ def lookup_source(remote_url):
         source_hash = _compute_sha256_digest(source_path)
     return asdict(UpstreamSource(remote_url, source_hash))
 
-@cache_region.cache_on_arguments()
 def lookup_srpm(remote_url):
     """Report SRPM details for a given URL (retrieving and parsing as needed)"""
     with _tempdir() as tmpdir:
