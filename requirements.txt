@@ -5,3 +5,4 @@ sarge
 attrs
 requests
 dogpile.cache
+redis
