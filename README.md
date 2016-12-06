@@ -74,8 +74,8 @@ oc new-app python35-rpmdevtools-s2i~https://github.com/ncoghlan/srpminfo.git
 oc expose svc srpminfo
 ```
 
-The project should also include a Redis instance to back the cache:
+The project must also include a Redis instance to store the metadata cache:
 
 ```
-oc new-app centos/redis
+oc new-app --name=redis fedora/redis
 ```
