@@ -70,12 +70,15 @@ $ cat Dockerfile | oc new-build --name python35-rpmdevtools-s2i --dockerfile -
 That builder must then be specified when creating the app:
 
 ```
-oc new-app python35-rpmdevtools-s2i~https://github.com/ncoghlan/srpminfo.git
-oc expose svc srpminfo
+$ oc new-app python35-rpmdevtools-s2i~https://github.com/ncoghlan/srpminfo.git
+$ oc expose svc srpminfo
 ```
 
-The project must also include a Redis instance to store the metadata cache:
+The project must also include a Redis instance to store the metadata cache,
+and that requires a little fiddling since generally available images aren't
+compatible with OpenShift v3.2 and earlier by default:
 
 ```
-oc new-app --name=redis fedora/redis
+$ cat Dockerfile.redis | oc new-build --name redis-stateless --dockerfile -
+$ oc new-app --name=redis --image-stream=redis-stateless --allow-missing-imagestream-tags
 ```

@@ -11,7 +11,6 @@ from attr import attributes, attrib, asdict
 from dogpile.cache import make_region
 import requests
 import sarge
-import redis
 
 log = logging.getLogger(__name__)
 
@@ -25,10 +24,6 @@ def configure_cache(redis_host, redis_port=6379, redis_db=0):
     global cache_region, lookup_source, lookup_srpm
     if cache_region is not None:
         raise RuntimeError("Cache already initialised")
-    # Ensure Redis doesn't fail when it can't save persistent snapshots
-    redis_url = "redis://{}:{}/{}".format(redis_host, redis_port, redis_db)
-    redis_server = redis.StrictRedis.from_url(redis_url)
-    redis_server.config_set("stop-writes-on-bgsave-error", "no")
     # Configure a Redis-backed cache region
     cache_region = make_region().configure(
         'dogpile.cache.redis',

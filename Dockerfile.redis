@@ -1,0 +1,10 @@
+FROM fedora/redis
+MAINTAINER Nick Coghlan <ncoghlan@redhat.com>
+
+# Configure redis to run without any persistent snapshots at all
+RUN  cp /etc/redis.conf /etc/redis-stateless.conf && \
+     echo 'save ""' >> /etc/redis-stateless.conf
+
+EXPOSE 6379
+
+CMD [ "redis-server", "/etc/redis-stateless.conf"]
