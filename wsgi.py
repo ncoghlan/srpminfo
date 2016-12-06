@@ -76,10 +76,11 @@ def base_response():
 # Launch the service
 ##############################################
 def _setup_logging():
-    # create logger with 'spam_application'
+    import sys
+    # Publish all srpminfo logs to stderr so gunicorn displays them
     logger = logging.getLogger('srpminfo')
     logger.setLevel(logging.DEBUG)
-    handler = logging.StreamHandler()
+    handler = logging.StreamHandler(sys.stderr)
     handler.setLevel(logging.DEBUG)
     logger.addHandler(handler)
 
