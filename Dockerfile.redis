@@ -6,10 +6,13 @@ MAINTAINER Nick Coghlan <ncoghlan@redhat.com>
 
 USER 0
 
-# Configure redis to run without any persistent snapshots at all
-# and logging to the console rather than to disk
+# Configure redis to:
+#   - run without any persistent snapshots at all
+#   - bind to all network interfaces
+#   - log to the console rather than to disk
 RUN  cp /etc/redis.conf /etc/redis-stateless.conf && \
      echo 'save ""' >> /etc/redis-stateless.conf && \
+     sed -i 's/^\(bind .*\)$/# \1/'  /etc/redis-stateless.conf && \
      sed -i 's/^\(logfile \).*$/\1""/'  /etc/redis-stateless.conf
 
 EXPOSE 6379
