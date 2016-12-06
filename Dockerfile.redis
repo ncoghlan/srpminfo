@@ -1,10 +1,21 @@
 FROM fedora/redis
 MAINTAINER Nick Coghlan <ncoghlan@redhat.com>
+# Based on the Fedora & CentOS Redis Dockerfiles
+# For OpenShift v3.3+, the upstream and CentOS Redis images should "just work"
+# but v3.2 is a little less cooperative, which is covered by this image.
+
+USER 0
 
 # Configure redis to run without any persistent snapshots at all
+# and logging to the console rather than to disk
 RUN  cp /etc/redis.conf /etc/redis-stateless.conf && \
-     echo 'save ""' >> /etc/redis-stateless.conf
+     echo 'save ""' >> /etc/redis-stateless.conf && \
+     sed -i 's/^\(logfile \).*$/\1""/'  /etc/redis-stateless.conf
 
 EXPOSE 6379
+
+# By default will run as random user on openshift and the redis user (997)
+# everywhere else
+USER 997
 
 CMD [ "redis-server", "/etc/redis-stateless.conf"]
