@@ -75,18 +75,17 @@ def base_response():
 ##############################################
 # Launch the service
 ##############################################
-import sys
 def _setup_logging():
     # Publish all srpminfo logs to stderr so gunicorn displays them
     logger = logging.getLogger('srpminfo')
     logger.setLevel(logging.DEBUG)
-    handler = logging.StreamHandler(sys.stderr)
+    handler = logging.StreamHandler()
     handler.setLevel(logging.DEBUG)
     logger.addHandler(handler)
 
+# Run setup outside the __main__ guard so it also runs under gunicorn
+_setup_logging()
+srpminfo.configure_cache("redis")
+
 if __name__ == "__main__":
-    print("Debug stdout console logging", flush=True)
-    print("Debug stderr console logging", flush=True, file=sys.stderr)
-    _setup_logging()
-    srpminfo.configure_cache("redis")
     application.run()
