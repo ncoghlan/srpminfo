@@ -82,3 +82,9 @@ compatible with OpenShift v3.2 and earlier by default:
 $ cat Dockerfile.redis | oc new-build --name redis-stateless --dockerfile -
 $ oc new-app --name=redis --image-stream=redis-stateless --allow-missing-imagestream-tags
 ```
+
+If you encounter problems with the `srpminfo` container failing to connect
+to the `redis` backend, then one workaround is to create an external route
+for the `redis` pod, and explicitly set the `REDIS_HOST` environment variable
+in the `srpminfo` build definition to refer to the external route, rather than
+relying on the internal service name that is used by default.

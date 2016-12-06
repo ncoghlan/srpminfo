@@ -76,16 +76,20 @@ def base_response():
 # Launch the service
 ##############################################
 def _setup_logging():
-    # Publish all srpminfo logs to stderr so gunicorn displays them
     logger = logging.getLogger('srpminfo')
     logger.setLevel(logging.DEBUG)
     handler = logging.StreamHandler()
     handler.setLevel(logging.DEBUG)
     logger.addHandler(handler)
 
+def _setup_cache_backend():
+    import os
+    redis_host = os.environ.get("REDIS_HOST", "redis")
+    srpminfo.configure_cache(redis_host)
+
 # Run setup outside the __main__ guard so it also runs under gunicorn
 _setup_logging()
-srpminfo.configure_cache("redis")
+_setup_cache_backend()
 
 if __name__ == "__main__":
     application.run()
