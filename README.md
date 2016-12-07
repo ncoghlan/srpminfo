@@ -58,6 +58,10 @@ The Redis caching is currently unbounded and there are no constraints on the
 URLs accessed, so exposing this as an accessible endpoint on an untrusted
 network would be a Bad Idea.
 
+However, it's fine for its intended purpose, which is to allow individuals
+or smallish teams to avoid repeatedly extracting the same metadata from a
+common set of SRPMs.
+
 
 ## Deployment Steps
 
