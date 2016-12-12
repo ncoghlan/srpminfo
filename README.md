@@ -7,8 +7,8 @@ URL-keyed SRPM details in Redis.
 
 The API server exposes two useful endpoints:
 
-    <API_BASE>/sources/<remote_artifact_url>
-    <API_BASE>/srpms/<remote_artifact_url>
+    <API_BASE>/sources/?remote_url=<remote_artifact_url>
+    <API_BASE>/srpms/?remote_url=<remote_artifact_url>
 
 The sources endpoint downloads the given remote artifact, hashes it
 with `sha256sum`, and reports the result as:
