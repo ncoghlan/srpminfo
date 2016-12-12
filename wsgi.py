@@ -3,7 +3,7 @@ import logging
 from functools import singledispatch
 
 import attr
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_restful import Resource, Api
 
 import srpminfo
@@ -50,16 +50,18 @@ def _handle_invalid_srpm(exc):
 # Set up the API endpoints
 ##############################################
 class Source(Resource):
-    def get(self, remote_url):
+    def get(self):
+        remote_url = request.args['remote_url']
         return jsonify(srpminfo.lookup_source(remote_url))
 
 class SRPM(Resource):
-    def get(self, remote_url):
+    def get(self):
+        remote_url = request.args['remote_url']
         return jsonify(srpminfo.lookup_srpm(remote_url))
 
 ENDPOINTS = (
-    ("srpms", SRPM, '/srpms/<path:remote_url>'),
-    ("sources", Source, '/sources/<path:remote_url>'),
+    ("srpms", SRPM, '/srpms/'),
+    ("sources", Source, '/sources/'),
 )
 
 RESOURCE_MAP = {}
