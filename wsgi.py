@@ -87,7 +87,9 @@ def _setup_cache_backend():
     redis_host = os.environ.get("REDIS_HOST", "redis")
     srpminfo.configure_cache(redis_host)
 
-# Run setup outside the __main__ guard so it also runs under gunicorn
+# Run setup outside the __main__ guard so it also runs under a WSGI
+# server which imports this as a module, rather than it being run as
+# the main script.
 _setup_logging()
 _setup_cache_backend()
 
