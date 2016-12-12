@@ -1,4 +1,3 @@
-gunicorn
 Flask
 flask-restful
 sarge
@@ -6,3 +5,4 @@ attrs
 requests
 dogpile.cache
 redis
+mod_wsgi
