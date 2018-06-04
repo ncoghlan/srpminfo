@@ -1,3 +1,7 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+I'm no longer working on any projects involving SRPM metadata extraction, so I'm not updating this either.
+
 # SRPM metadata extractor
 
 This is a simple SRPM metadata extraction and caching server that caches
